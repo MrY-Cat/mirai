@@ -7,21 +7,9 @@
  * https://github.com/mamoe/mirai/blob/dev/LICENSE
  */
 
-plugins {
-    kotlin("jvm") version "1.8.20"
-    kotlin("plugin.serialization") version "1.8.20"
-    id("net.mamoe.mirai-console") version "2.99.0-local"
-    java
-}
+package net.mamoe.mirai.internal.utils
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+import net.mamoe.mirai.utils.ExternalResource
 
-dependencies {
-
-}
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
+@Suppress("FunctionName")
+internal expect fun CombinedExternalResource(vararg resources: ExternalResource): ExternalResource

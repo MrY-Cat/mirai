@@ -234,7 +234,9 @@ public open class BotConfiguration : AbstractBotConfiguration() { // open for Ja
         /**
          * Android 手表.
          *
-         * 注意: 不支持戳一戳事件解析
+         * 注意:
+         * - 不支持戳一戳事件解析
+         * - 由于该协议的省电特性, 当群被设置为不提醒的的时候, 服务器不会推送消息.
          */
         ANDROID_WATCH,
 
@@ -259,6 +261,13 @@ public open class BotConfiguration : AbstractBotConfiguration() { // open for Ja
          * @since 2.15.0
          */
         public val isQRLoginSupported: Boolean get() = data.isQRLoginSupported
+
+        /**
+         * 当前协议是否支持[戳一戳][Bot.nudge]
+         *
+         * @since 2.16.0
+         */
+        public val isNudgeSupported: Boolean get() = data.isNudgeSupported
 
         private inline val data: InternalProtocolDataExchange.InternalProtocolData
             get() = InternalProtocolDataExchange.instance.of(
@@ -583,6 +592,7 @@ public interface InternalProtocolDataExchange {
     @MiraiInternalApi
     public interface InternalProtocolData {
         public val isQRLoginSupported: Boolean
+        public val isNudgeSupported: Boolean
         public val mainVersion: String
         public val buildVersion: String
         public val sdkVersion: String

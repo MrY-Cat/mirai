@@ -30,7 +30,7 @@ HTTP 插件），也可以阅读 [用户手册](UserManual.md) 进行个性化�
 
 [iTXTech/mirai-kts]: https://github.com/iTXTech/mirai-kts
 
-[AliceBot]: https://github.com/st1020/alicebot
+[AliceBot]: https://github.com/AliceBotProject/alicebot
 
 [GraiaProject/Ariadne]: https://github.com/GraiaProject/Ariadne
 
@@ -49,6 +49,8 @@ HTTP 插件），也可以阅读 [用户手册](UserManual.md) 进行个性化�
 [cyanray/mirai-cpp]: https://github.com/cyanray/mirai-cpp
 
 [Chlorie/miraipp]: https://github.com/Chlorie/miraipp-template
+
+[Numendacil/cpp-mirai-client]: https://github.com/Numendacil/cpp-mirai-client
 
 [Executor-Cheng/mirai-CSharp]: https://github.com/Executor-Cheng/mirai-CSharp
 
@@ -138,6 +140,7 @@ HTTP 插件），也可以阅读 [用户手册](UserManual.md) 进行个性化�
 | `C#`                      | [yuansicloud/Abp.Mirai]              |
 | `C++`                     | [cyanray/mirai-cpp]                  |
 | `C++`                     | [Chlorie/miraipp]                    |
+| `C++`                     | [Numendacil/cpp-mirai-client]        |
 | `GDScript`                | [Xwdit/RainyBot-Core]                |
 | `Go`                      | [Logiase/gomirai]                    |
 | `JavaScript` / Node.js    | [RedBeanN/node-mirai]                |

@@ -18,6 +18,7 @@ import net.mamoe.mirai.internal.AbstractBot
 import net.mamoe.mirai.internal.QQAndroidBot
 import net.mamoe.mirai.internal.network.*
 import net.mamoe.mirai.internal.network.DebuggingProperties.SHOW_TLV_MAP_ON_LOGIN_SUCCESS
+import net.mamoe.mirai.internal.network.components.KeyRefreshProcessor
 import net.mamoe.mirai.internal.network.handler.logger
 import net.mamoe.mirai.internal.network.protocol.packet.*
 import net.mamoe.mirai.internal.network.protocol.packet.login.wtlogin.WtLogin8
@@ -241,6 +242,8 @@ internal class WtLogin {
                 // 40: blocked
                 // 161: 今日操作次数过多，请等待一天后再试。   (SMS)
                 // 162: 可能也是 SMS 太频繁
+                // 180：可能是需要换服务器或者 refresh key
+                180 -> onRequestRefreshKeys(tlvMap, bot)
                 204 /*-52*/ -> onDevLockLogin(tlvMap, bot)
                 // 1, 15 -> onErrorMessage(tlvMap) ?: error("Cannot find error message")
                 else -> {
@@ -254,6 +257,49 @@ internal class WtLogin {
 
         private fun dumpTlvMap(tlvMap: TlvMap): String {
             return tlvMap.entries.joinToString { "${it.key}=${it.value.toUHexString()}" }
+        }
+
+        // request refresh keys or change server ip?
+        private suspend fun onRequestRefreshKeys(
+            tlvMap: TlvMap,
+            bot: QQAndroidBot
+        ): LoginPacketResponse {
+            val errorMessage = onErrorMessage(0x146, tlvMap, bot)
+            if (errorMessage != null) {
+                return errorMessage
+            }
+
+            // analysis tlv t161
+            val t161 = (tlvMap[0x161]
+                ?: return LoginPacketResponse.Error(bot, 0x146, "login failed",
+                    "login result type 180 without and t161 error message", ""))
+                .toReadPacket()
+                .apply { discardExact(2) }
+                .withUse { _readTLVMap() }
+                .also { tm ->
+                    tm[0x173]?.let { bot.client.analysisTlv173(it) }
+                    tm[0x17f]?.let { bot.client.analysisTlv17f(it) }
+                }
+
+            val t172 = t161[0x172]
+            if (t172 != null) {
+                if (t172.contentEquals(bot.client.rollbackSig)) {
+                    return LoginPacketResponse.Error(bot, 0x146, "login failed",
+                        "login result type 180 with same t172 as the client's", "")
+                }
+
+                runCatching {
+                    bot.client.rollbackSig = t172
+                    bot.components[KeyRefreshProcessor].refreshKeysNow(bot.network)
+                }.fold(
+                    onSuccess = { return LoginPacketResponse.Success(bot) },
+                    onFailure = { return LoginPacketResponse.Error(bot, 0x146, "login failed",
+                        "failed to refresh keys on receiving login result type 180", "") }
+                )
+            } else {
+                return LoginPacketResponse.Error(bot, 0x146, "login failed",
+                    "login result type 180 without t172", "")
+            }
         }
 
         private fun onDevLockLogin(

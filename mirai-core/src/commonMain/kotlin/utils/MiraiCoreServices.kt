@@ -63,6 +63,10 @@ internal object MiraiCoreServices {
         ) { net.mamoe.mirai.internal.message.protocol.impl.MarketFaceProtocol() }
         Services.register(
             msgProtocol,
+            "net.mamoe.mirai.internal.message.protocol.impl.SuperFaceProtocol"
+        ) { net.mamoe.mirai.internal.message.protocol.impl.SuperFaceProtocol() }
+        Services.register(
+            msgProtocol,
             "net.mamoe.mirai.internal.message.protocol.impl.MusicShareProtocol"
         ) { net.mamoe.mirai.internal.message.protocol.impl.MusicShareProtocol() }
         Services.register(
@@ -81,6 +85,10 @@ internal object MiraiCoreServices {
             msgProtocol,
             "net.mamoe.mirai.internal.message.protocol.impl.RichMessageProtocol"
         ) { net.mamoe.mirai.internal.message.protocol.impl.RichMessageProtocol() }
+        Services.register(
+            msgProtocol,
+            "net.mamoe.mirai.internal.message.protocol.impl.ShortVideoProtocol"
+        ) { net.mamoe.mirai.internal.message.protocol.impl.ShortVideoProtocol() }
         Services.register(
             msgProtocol,
             "net.mamoe.mirai.internal.message.protocol.impl.TextProtocol"
